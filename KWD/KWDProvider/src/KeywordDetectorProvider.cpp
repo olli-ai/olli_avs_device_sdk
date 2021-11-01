@@ -35,7 +35,7 @@ std::unique_ptr<kwd::AbstractKeywordDetector> KeywordDetectorProvider::create(
         audioFormat,
         keyWordObservers,
         keyWordDetectorStateObservers,
-        pathToInputFolder + "/spot-alexa-rpi-31000.snsr");
+        pathToInputFolder + "/sensory-thf-viVN-maikaoi-1mb.snsr");
 #else
     return nullptr;
 #endif

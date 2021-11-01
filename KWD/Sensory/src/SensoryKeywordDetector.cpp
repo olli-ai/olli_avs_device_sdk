@@ -54,6 +54,9 @@ static const unsigned int SENSORY_COMPATIBLE_SAMPLE_SIZE_IN_BITS = 16;
 /// The Sensory compatible number of channels, which is 1.
 static const unsigned int SENSORY_COMPATIBLE_NUM_CHANNELS = 1;
 
+static  int m_intFD = -1;
+static u_int32_t m_SensoryResponse[2] = {};
+
 /// The Sensory compatible audio encoding of LPCM.
 static const avsCommon::utils::AudioFormat::Encoding SENSORY_COMPATIBLE_ENCODING =
     avsCommon::utils::AudioFormat::Encoding::LPCM;
@@ -115,12 +118,10 @@ static bool isAudioFormatCompatibleWithSensory(avsCommon::utils::AudioFormat aud
     };
 u_int32_t *securityChipComms(u_int32_t *challenge)
 {
-    static u_int32_t response[2] = {};
     struct rw_data cmd = {0};
     int i = 1;
-    static int l_sensory_fd = -1;
-
-    printf("########challenge with cryto chip\n");
+    m_SensoryResponse[0] = 0;
+    m_SensoryResponse[1] = 0;
 
     cmd.data[i++] = challenge[0] >> 0 & 0xff;
     cmd.data[i++] = challenge[0] >> 8 & 0xff,
@@ -131,30 +132,30 @@ u_int32_t *securityChipComms(u_int32_t *challenge)
     cmd.data[i++] = challenge[1] >> 16 & 0xff;
     cmd.data[i++] = challenge[1] >> 24 & 0xff;
     cmd.sleep_ms = 50;
-    if (l_sensory_fd < 0) {
-        l_sensory_fd = open(SENSORY_DEVICE, O_RDWR);
-        if (l_sensory_fd < 0) {
+    if (m_intFD < 0) {
+        m_intFD = open(SENSORY_DEVICE, O_RDWR);
+        if (m_intFD < 0) {
             printf(" Failed during open %s\n", SENSORY_DEVICE);
-            return response;
+            return m_SensoryResponse;
         }
     }
-    if (ioctl(l_sensory_fd, I2C_SLAVE, &cmd) < 0)
+    if (ioctl(m_intFD, I2C_SLAVE, &cmd) < 0)
     {
         printf("Failed to commnunicate device\n");
-        close(l_sensory_fd);
-        l_sensory_fd = -1;
-        return response;
+        close(m_intFD);
+        m_intFD = -1;
+        return m_SensoryResponse;
     }
     i = 1;
-    response[0]  = cmd.data[i++];
-    response[0] |= cmd.data[i++] << 8;
-    response[0] |= cmd.data[i++] << 16;
-    response[0] |= cmd.data[i++] << 24;
-    response[1] =  cmd.data[i++];
-    response[1] |= cmd.data[i++] << 8;
-    response[1] |= cmd.data[i++] << 16;
-    response[1] |= cmd.data[i++] << 24;
-    return response;
+    m_SensoryResponse[0]  = cmd.data[i++];
+    m_SensoryResponse[0] |= cmd.data[i++] << 8;
+    m_SensoryResponse[0] |= cmd.data[i++] << 16;
+    m_SensoryResponse[0] |= cmd.data[i++] << 24;
+    m_SensoryResponse[1] =  cmd.data[i++];
+    m_SensoryResponse[1] |= cmd.data[i++] << 8;
+    m_SensoryResponse[1] |= cmd.data[i++] << 16;
+    m_SensoryResponse[1] |= cmd.data[i++] << 24;
+    return m_SensoryResponse;
 }
 
 /**
@@ -250,6 +251,10 @@ std::unique_ptr<SensoryKeywordDetector> SensoryKeywordDetector::create(
 
 SensoryKeywordDetector::~SensoryKeywordDetector() {
     m_isShuttingDown = true;
+    if (m_intFD > -1) {
+        close(m_intFD);
+        m_intFD = -1;
+    }
     if (m_detectionThread.joinable()) {
         m_detectionThread.join();
     }
@@ -311,7 +316,9 @@ bool SensoryKeywordDetector::init(const std::string& modelFilePath) {
         return false;
     }
 
-    result = snsrRequire(m_session, SNSR_TASK_TYPE, SNSR_PHRASESPOT);
+    result = snsrRequire(m_session, SNSR_TASK_TYPE_AND_VERSION_LIST, SNSR_PHRASESPOT " ~0.5.0 || 1.0.0;"
+                                                                  SNSR_LVCSR " 1.0.0;"
+                                                                  SNSR_PHRASESPOT_VAD " 1.2.3");
     if (result != SNSR_RC_OK) {
         ACSDK_ERROR(LX("initFailed")
                         .d("reason", "invalidTaskType")

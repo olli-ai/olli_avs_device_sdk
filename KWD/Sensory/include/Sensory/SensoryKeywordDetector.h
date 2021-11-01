@@ -140,7 +140,6 @@ private:
 
     /// The Sensory handle.
     SnsrSession m_session;
-
     /**
      * The max number of samples to push into the underlying engine per iteration. This will be determined based on the
      * sampling rate of the audio data passed in.
