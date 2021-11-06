@@ -27,6 +27,9 @@
 
 #include "SampleApp/ConsolePrinter.h"
 #include "SampleApp/UIManager.h"
+#ifdef OLLI_IMPL
+#include "SampleApp/olli_alexa.h"
+#endif
 
 /// String to identify log entries originating from this file.
 static const std::string TAG("UIManager");
@@ -637,6 +640,9 @@ void UIManager::onDialogUXStateChanged(DialogUXState state) {
             return;
         }
         m_dialogState = state;
+#ifdef OLLI_IMPL
+        olli_report_state((enum alexa_state)m_dialogState);
+#endif
         printState();
     });
 }
@@ -647,6 +653,9 @@ void UIManager::onConnectionStatusChanged(const Status status, const ChangedReas
             return;
         }
         m_connectionStatus = status;
+#ifdef OLLI_IMPL
+        // olli_report_state((enum alexa_state)status);
+#endif
         printState();
     });
 }

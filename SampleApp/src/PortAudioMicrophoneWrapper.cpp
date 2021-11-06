@@ -187,6 +187,7 @@ static const std::string SAMPLE_APP_CONFIG_ROOT_KEY("sampleApp");
 static const std::string PORTAUDIO_CONFIG_ROOT_KEY("portAudio");
 static const std::string PORTAUDIO_CONFIG_SUGGESTED_LATENCY_KEY("suggestedLatency");
 
+#ifdef OLLI_IMPL
 void PortAudioMicrophoneWrapper::OLLIStartThreadrReadData(void *userData)
 {
     int ret;
@@ -209,6 +210,7 @@ void PortAudioMicrophoneWrapper::OLLIStartThreadrReadData(void *userData)
         }
     }
 }
+#endif
 
 /// String to identify log entries originating from this file.
 static const std::string TAG("PortAudioMicrophoneWrapper");

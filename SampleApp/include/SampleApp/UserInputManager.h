@@ -181,6 +181,10 @@ private:
      */
     bool deviceSetupCompleted();
 
+#ifdef OLLI_IMPL
+    static void handleMsgCallback(void *msg, void *user_data);
+#endif
+
     /// The main interaction manager that interfaces with the SDK.
     std::shared_ptr<InteractionManager> m_interactionManager;
 

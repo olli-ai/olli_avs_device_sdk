@@ -279,8 +279,8 @@ bool SensoryKeywordDetector::init(const std::string& modelFilePath) {
         ACSDK_ERROR(LX("initFailed").d("reason", "createStreamReaderFailed"));
         return false;
     }
-    snsrConfig(SNSR_CONFIG_SECURITY_CHIP, securityChipComms);
-    printf("#####Running sensory chip#########\n");
+    // snsrConfig(SNSR_CONFIG_SECURITY_CHIP, securityChipComms);
+    // printf("#####Running sensory chip#########\n");
     // Allocate the Sensory library handle
     SnsrRC result = snsrNew(&m_session);
     if (result != SNSR_RC_OK) {

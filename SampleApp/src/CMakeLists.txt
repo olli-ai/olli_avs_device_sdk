@@ -14,6 +14,10 @@ list(APPEND LibSampleApp_SOURCES
         SampleApplication.cpp
         SampleEqualizerModeController.cpp)
 
+if (OLLI_IMPL)
+    list(APPEND LibSampleApp_SOURCES olli_alexa.cpp)
+endif()
+
 if (DIAGNOSTICS)
     list(APPEND LibSampleApp_SOURCES SDKDiagnostics.cpp)
 endif()
@@ -151,3 +155,4 @@ target_link_libraries(SampleApp LibSampleApp)
 
 # install target
 asdk_install_targets(LibSampleApp TRUE)
+install(TARGETS SampleApp DESTINATION "${ASDK_BIN_INSTALL_DIR}")

@@ -35,7 +35,7 @@ std::unique_ptr<kwd::AbstractKeywordDetector> KeywordDetectorProvider::create(
         audioFormat,
         keyWordObservers,
         keyWordDetectorStateObservers,
-        pathToInputFolder + "/sensory-thf-viVN-maikaoi-1mb.snsr");
+        pathToInputFolder + "/thfft_alexa_enus_THF6.0_1mbi.snsr");
 #else
     return nullptr;
 #endif

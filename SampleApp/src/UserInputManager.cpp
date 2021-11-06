@@ -21,6 +21,9 @@
 #include <AVSCommon/Utils/String/StringUtils.h>
 #include "SampleApp/UserInputManager.h"
 #include "SampleApp/ConsolePrinter.h"
+#ifdef OLLI_IMPL
+#include "SampleApp/olli_alexa.h"
+#endif
 
 #ifdef MODE_CONTROLLER
 #include "SampleApp/PeripheralEndpoint/PeripheralEndpointModeControllerHandler.h"
@@ -259,7 +262,30 @@ bool UserInputManager::sendDtmf(const std::string& dtmfTones) {
 }
 #endif
 
+#ifdef OLLI_IMPL
+void UserInputManager::handleMsgCallback(void *m_msg, void *user_data)
+{
+    if (!m_msg) return;
+    struct olli_msg* msg = (struct olli_msg*)m_msg;
+    if (!user_data) return;
+    UserInputManager* m_this = static_cast<UserInputManager*>(user_data);
+    printf("Data recieved: %d\n", msg->state);
+    switch (msg->state)
+    {
+    case OLLI_ALEXA_LISTENING:
+        m_this->m_interactionManager->stopForegroundActivity();
+        break;
+    
+    default:
+        break;
+    }
+}
+#endif
+
 SampleAppReturnCode UserInputManager::run() {
+#ifdef OLLI_IMPL
+    olli_work_loop_read_data(UserInputManager::handleMsgCallback, this);
+#else
     bool userTriggeredLogout = false;
     m_interactionManager->begin();
     while (true) {
@@ -402,6 +428,7 @@ SampleAppReturnCode UserInputManager::run() {
     if (!userTriggeredLogout && m_restart) {
         return SampleAppReturnCode::RESTART;
     }
+#endif
     return SampleAppReturnCode::OK;
 }
 

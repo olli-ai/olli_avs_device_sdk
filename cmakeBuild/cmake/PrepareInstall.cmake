@@ -113,6 +113,7 @@ SET(PKG_CONFIG_CFLAGS       "-I\${includedir}")
 
 # Set library and header files install directory
 SET(ASDK_LIB_INSTALL_DIR     "${CMAKE_INSTALL_PREFIX}/lib")
+SET(ASDK_BIN_INSTALL_DIR     "${CMAKE_INSTALL_PREFIX}/bin")
 SET(ASDK_INCLUDE_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}")
 
 # Use this RPATH when installing.
