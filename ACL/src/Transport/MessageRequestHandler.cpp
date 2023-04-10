@@ -40,10 +40,10 @@ using namespace avsCommon::utils::metrics;
 using namespace avsCommon::utils::power;
 
 /// URL to send events to
-const static std::string AVS_EVENT_URL_PATH_EXTENSION = "/v20160207/events";
+const static std::string AVS_EVENT_URL_PATH_EXTENSION = "/20221111/events";
 
 /// Boundary for mime encoded requests
-const static std::string MIME_BOUNDARY = "WhooHooZeerOoonie=";
+const static std::string MIME_BOUNDARY = "OlliMaikaVoiceService";
 
 /// Timeout for transmission of data on a given stream
 static const std::chrono::seconds STREAM_PROGRESS_TIMEOUT = std::chrono::seconds(15);

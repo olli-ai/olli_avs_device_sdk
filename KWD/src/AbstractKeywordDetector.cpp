@@ -72,7 +72,7 @@ void AbstractKeywordDetector::notifyKeyWordObservers(
     std::shared_ptr<const std::vector<char>> KWDMetadata) const {
     std::lock_guard<std::mutex> lock(m_keyWordObserversMutex);
     for (auto keyWordObserver : m_keyWordObservers) {
-        keyWordObserver->onKeyWordDetected(stream, keyword, beginIndex, endIndex, KWDMetadata);
+        keyWordObserver->onKeyWordDetected(stream, keyword, avsCommon::sdkInterfaces::KeyWordObserverInterface::UNSPECIFIED_INDEX, endIndex, KWDMetadata);
     }
 }
 

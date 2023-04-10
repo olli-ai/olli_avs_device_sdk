@@ -50,44 +50,44 @@ KeywordObserver::KeywordObserver(
  * @param stream The stream in which the keyword was detected.
  * @param startOfSpeechTimestamp Moment in time to calculate when user started talking to Alexa.
  */
-static void computeStartOfSpeechTimestamp(
-    const avsCommon::avs::AudioInputStream::Index wakewordBeginIndex,
-    const avsCommon::avs::AudioInputStream::Index wakewordEndIndex,
-    const int sampleRateHz,
-    const std::shared_ptr<avsCommon::avs::AudioInputStream>& stream,
-    std::chrono::steady_clock::time_point& startOfSpeechTimestamp) {
-    // Create a reader to get the current index position
-    static const auto startWithNewData = true;
-    if (!stream) {
-        ACSDK_WARN(LX("onKeywordDetected").m("Audio stream was null, using default offset."));
-        return;
-    }
+// static void computeStartOfSpeechTimestamp(
+//     const avsCommon::avs::AudioInputStream::Index wakewordBeginIndex,
+//     const avsCommon::avs::AudioInputStream::Index wakewordEndIndex,
+//     const int sampleRateHz,
+//     const std::shared_ptr<avsCommon::avs::AudioInputStream>& stream,
+//     std::chrono::steady_clock::time_point& startOfSpeechTimestamp) {
+//     // Create a reader to get the current index position
+//     static const auto startWithNewData = true;
+//     if (!stream) {
+//         ACSDK_WARN(LX("onKeywordDetected").m("Audio stream was null, using default offset."));
+//         return;
+//     }
 
-    auto reader = stream->createReader(avsCommon::avs::AudioInputStream::Reader::Policy::NONBLOCKING, startWithNewData);
-    if (!reader) {
-        ACSDK_WARN(LX("onKeywordDetected").m("Reader was null, using default offset."));
-        return;
-    }
+//     auto reader = stream->createReader(avsCommon::avs::AudioInputStream::Reader::Policy::NONBLOCKING, startWithNewData);
+//     if (!reader) {
+//         ACSDK_WARN(LX("onKeywordDetected").m("Reader was null, using default offset."));
+//         return;
+//     }
 
-    // Get the current index position
-    const auto currentIndex = reader->tell();
+//     // Get the current index position
+//     const auto currentIndex = reader->tell();
 
-    if (currentIndex <= wakewordBeginIndex) {
-        ACSDK_WARN(LX("onKeywordDetected").m("Index wrapping occurred, using default offset."));
-        // Note: this should never happen, since it should not be possible for millions of years w/ 64-bit indexes.
-        return;
-    }
+//     if (currentIndex <= wakewordBeginIndex) {
+//         ACSDK_WARN(LX("onKeywordDetected").m("Index wrapping occurred, using default offset."));
+//         // Note: this should never happen, since it should not be possible for millions of years w/ 64-bit indexes.
+//         return;
+//     }
 
-    // Translate the currentIndex position to a time duration elapsed since the end of wakeword
-    const auto sampleRatePerMillisec = sampleRateHz / 1000;
+//     // Translate the currentIndex position to a time duration elapsed since the end of wakeword
+//     const auto sampleRatePerMillisec = sampleRateHz / 1000;
 
-    const auto timeSinceStartOfWW =
-        std::chrono::milliseconds((currentIndex - wakewordBeginIndex) / sampleRatePerMillisec);
-    ACSDK_DEBUG9(LX(__func__).d("timeSinceStartOfWW", timeSinceStartOfWW.count()));
+//     const auto timeSinceStartOfWW =
+//         std::chrono::milliseconds((currentIndex - wakewordBeginIndex) / sampleRatePerMillisec);
+//     ACSDK_DEBUG9(LX(__func__).d("timeSinceStartOfWW", timeSinceStartOfWW.count()));
 
-    // Adjust the start of speech timestamp to be the start of the WW.
-    startOfSpeechTimestamp -= timeSinceStartOfWW;
-}
+//     // Adjust the start of speech timestamp to be the start of the WW.
+//     startOfSpeechTimestamp -= timeSinceStartOfWW;
+// }
 
 void KeywordObserver::onKeyWordDetected(
     std::shared_ptr<avsCommon::avs::AudioInputStream> stream,
@@ -95,22 +95,24 @@ void KeywordObserver::onKeyWordDetected(
     avsCommon::avs::AudioInputStream::Index beginIndex,
     avsCommon::avs::AudioInputStream::Index endIndex,
     std::shared_ptr<const std::vector<char>> KWDMetadata) {
-    if (endIndex != avsCommon::sdkInterfaces::KeyWordObserverInterface::UNSPECIFIED_INDEX &&
-        beginIndex == avsCommon::sdkInterfaces::KeyWordObserverInterface::UNSPECIFIED_INDEX) {
+    // if (endIndex != avsCommon::sdkInterfaces::KeyWordObserverInterface::UNSPECIFIED_INDEX &&
+    //     beginIndex == avsCommon::sdkInterfaces::KeyWordObserverInterface::UNSPECIFIED_INDEX) {
+        system("echo 0 >/sys/class/gpio/gpio31/value");
+        system("aplay /data/olli/ting_1-47612.wav -D mixout1 &");
         if (m_client) {
             m_client->notifyOfTapToTalk(m_audioProvider, endIndex);
         }
-    } else if (
-        endIndex != avsCommon::sdkInterfaces::KeyWordObserverInterface::UNSPECIFIED_INDEX &&
-        beginIndex != avsCommon::sdkInterfaces::KeyWordObserverInterface::UNSPECIFIED_INDEX) {
-        if (m_client) {
-            auto startOfSpeechTimestamp = std::chrono::steady_clock::now();
-            computeStartOfSpeechTimestamp(
-                beginIndex, endIndex, m_audioProvider.format.sampleRateHz, stream, startOfSpeechTimestamp);
-            m_client->notifyOfWakeWord(
-                m_audioProvider, beginIndex, endIndex, keyword, startOfSpeechTimestamp, KWDMetadata);
-        }
-    }
+        // } else if (
+        //     endIndex != avsCommon::sdkInterfaces::KeyWordObserverInterface::UNSPECIFIED_INDEX &&
+        //     beginIndex != avsCommon::sdkInterfaces::KeyWordObserverInterface::UNSPECIFIED_INDEX) {
+        //     if (m_client) {
+        //         auto startOfSpeechTimestamp = std::chrono::steady_clock::now();
+        //         computeStartOfSpeechTimestamp(
+        //             beginIndex, endIndex, m_audioProvider.format.sampleRateHz, stream, startOfSpeechTimestamp);
+        //         m_client->notifyOfWakeWord(
+        //             m_audioProvider, beginIndex, endIndex, keyword, startOfSpeechTimestamp, KWDMetadata);
+        //     }
+        // }
 }
 
 }  // namespace sampleApp

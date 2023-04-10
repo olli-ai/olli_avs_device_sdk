@@ -82,16 +82,16 @@ static const std::chrono::minutes DEFAULT_REQUEST_TIMEOUT = std::chrono::minutes
 static const std::chrono::minutes DEFAULT_ACCESS_TOKEN_REFRESH_HEAD_START = std::chrono::minutes(10);
 
 /// Default for configured base URL for @c LWA requests.
-static const std::string DEFAULT_LWA_BASE_URL = "https://api.amazon.com/auth/O2/";
+static const std::string DEFAULT_LWA_BASE_URL = "https://staging.oauth2.iviet.com/oauth2/";
 
 /// Path suffix for URL used in code pair requests to @C LWA.
 static const std::string REQUEST_CODE_PAIR_PATH = "create/codepair";
 
 /// Path suffix for URL used in code pair token requests to @c LWA.
-static const std::string REQUEST_TOKEN_PATH = "token";
+static const std::string REQUEST_TOKEN_PATH = "access_token";
 
 /// Path suffix for URl used in token refresh requests to @c LWA.
-static const std::string REFRESH_TOKEN_PATH = "token";
+static const std::string REFRESH_TOKEN_PATH = "access_token";
 
 /// Default for configured base URL for @c LWA requests.
 static const std::string CUSTOMER_PROFILE_URL = "https://api.amazon.com/user/profile";

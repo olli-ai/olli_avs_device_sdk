@@ -23,6 +23,7 @@
 #include <AVSCommon/Utils/Logger/Logger.h>
 
 #include "Sensory/SensoryKeywordDetector.h"
+#include "maikaoi_model_1MB.h"
 
 namespace alexaClientSDK {
 namespace kwd {
@@ -279,8 +280,8 @@ bool SensoryKeywordDetector::init(const std::string& modelFilePath) {
         ACSDK_ERROR(LX("initFailed").d("reason", "createStreamReaderFailed"));
         return false;
     }
-    // snsrConfig(SNSR_CONFIG_SECURITY_CHIP, securityChipComms);
-    // printf("#####Running sensory chip#########\n");
+    printf("#####Running sensory chip#########\n");
+    snsrConfig(SNSR_CONFIG_SECURITY_CHIP, securityChipComms);
     // Allocate the Sensory library handle
     SnsrRC result = snsrNew(&m_session);
     if (result != SNSR_RC_OK) {
@@ -309,7 +310,7 @@ bool SensoryKeywordDetector::init(const std::string& modelFilePath) {
         ACSDK_INFO(LX("Sensory library license does not expire for at least 60 more days."));
     }
 
-    result = snsrLoad(m_session, snsrStreamFromFileName(modelFilePath.c_str(), "r"));
+    result = snsrLoad(m_session, snsrStreamFromMemory(maikaoi_model_snsr, sizeof(maikaoi_model_snsr), SNSR_ST_MODE_READ));
     if (result != SNSR_RC_OK) {
         ACSDK_ERROR(
             LX("initFailed").d("reason", "loadingSensoryModelFailed").d("error", getSensoryDetails(m_session, result)));

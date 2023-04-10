@@ -44,7 +44,7 @@ static const std::string AVS_GATEWAY_MANAGER_ROOT_KEY = "avsGatewayManager";
 static const std::string AVS_GATEWAY = "avsGateway";
 
 /// Default @c AVS gateway to connect to.
-static const std::string DEFAULT_AVS_GATEWAY = "https://alexa.na.gateway.devices.a2z.com";
+static const std::string DEFAULT_AVS_GATEWAY = "https://staging.mvs.maika.ai";
 
 std::shared_ptr<avsCommon::sdkInterfaces::AVSGatewayManagerInterface> AVSGatewayManager::
     createAVSGatewayManagerInterface(

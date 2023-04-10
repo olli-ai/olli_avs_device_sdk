@@ -1653,8 +1653,8 @@ class ThreadWithParam : public ThreadWithParamBase {
 //
 // A static Mutex *must* be defined or declared using one of the following
 // macros:
-//   GTEST_DEFINE_STATIC_MUTEX_(g_some_mutex);
-//   GTEST_DECLARE_STATIC_MUTEX_(g_some_mutex);
+//   GTEST_DEFINE_SHARED_MUTEX_(g_some_mutex);
+//   GTEST_DECLARE_SHARED_MUTEX_(g_some_mutex);
 //
 // (A non-static Mutex is defined/declared in the usual way).
 class GTEST_API_ Mutex {
@@ -1698,10 +1698,10 @@ class GTEST_API_ Mutex {
   GTEST_DISALLOW_COPY_AND_ASSIGN_(Mutex);
 };
 
-# define GTEST_DECLARE_STATIC_MUTEX_(mutex) \
+# define GTEST_DECLARE_SHARED_MUTEX_(mutex) \
     extern ::testing::internal::Mutex mutex
 
-# define GTEST_DEFINE_STATIC_MUTEX_(mutex) \
+# define GTEST_DEFINE_SHARED_MUTEX_(mutex) \
     ::testing::internal::Mutex mutex(::testing::internal::Mutex::kStaticMutex)
 
 // We cannot name this class MutexLock because the ctor declaration would
@@ -1965,11 +1965,11 @@ class MutexBase {
 };
 
 // Forward-declares a static mutex.
-#  define GTEST_DECLARE_STATIC_MUTEX_(mutex) \
+#  define GTEST_DECLARE_SHARED_MUTEX_(mutex) \
      extern ::testing::internal::MutexBase mutex
 
 // Defines and statically (i.e. at link time) initializes a static mutex.
-#  define GTEST_DEFINE_STATIC_MUTEX_(mutex) \
+#  define GTEST_DEFINE_SHARED_MUTEX_(mutex) \
      ::testing::internal::MutexBase mutex = { PTHREAD_MUTEX_INITIALIZER, false, pthread_t() }
 
 // The Mutex class can only be used for mutexes created at runtime. It
@@ -2141,10 +2141,10 @@ class Mutex {
   void AssertHeld() const {}
 };
 
-# define GTEST_DECLARE_STATIC_MUTEX_(mutex) \
+# define GTEST_DECLARE_SHARED_MUTEX_(mutex) \
   extern ::testing::internal::Mutex mutex
 
-# define GTEST_DEFINE_STATIC_MUTEX_(mutex) ::testing::internal::Mutex mutex
+# define GTEST_DEFINE_SHARED_MUTEX_(mutex) ::testing::internal::Mutex mutex
 
 // We cannot name this class MutexLock because the ctor declaration would
 // conflict with a macro named MutexLock, which is defined on some

@@ -34,7 +34,7 @@ using namespace avsCommon::utils::metrics;
 using namespace avsCommon::utils::power;
 
 /// Downchannel URL
-const static std::string AVS_DOWNCHANNEL_URL_PATH_EXTENSION = "/v20160207/directives";
+const static std::string AVS_DOWNCHANNEL_URL_PATH_EXTENSION = "/20221111/directives";
 
 /// Prefix for the ID of downchannel requests.
 static const std::string DOWNCHANNEL_ID_PREFIX = "AVSDownChannel-";

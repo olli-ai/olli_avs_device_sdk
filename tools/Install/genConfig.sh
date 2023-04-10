@@ -119,7 +119,7 @@ fi
 # Arguments are: json_key
 read_config_json()
 {
-python << EOF
+python3 << EOF
 import json
 value = ""
 with open("${CONFIG_JSON_FILE}", "r") as f:
@@ -131,11 +131,11 @@ EOF
 }
 
 CLIENT_ID=$(read_config_json "clientId")
-if [[ ! "$CLIENT_ID" =~ amzn1\.application-oa2-client\.[0-9a-z]{32} ]]
-then
-   echo 'client ID is invalid!'
-   exit 2
-fi
+# if [[ ! "$CLIENT_ID" =~ amzn1\.application-oa2-client\.[0-9a-z]{32} ]]
+# then
+#    echo 'client ID is invalid!'
+#    exit 2
+# fi
 
 PRODUCT_ID=$(read_config_json "productId")
 if [[ ! "$PRODUCT_ID" =~ [0-9a-zA-Z_]+ ]]
@@ -194,7 +194,7 @@ SDK_CONFIG_DEVICE_DESCRIPTION=${extra_variables[${INDEX_DEVICE_DESCRIPTION}]}
 set +a
 
 # Use python template substitute to generate $OUTPUT_CONFIG_FILE
-python << EOF
+python3 << EOF
 import os
 from string import Template
 with open("${INPUT_CONFIG_FILE}", "r") as f, open("${OUTPUT_CONFIG_FILE}", "w") as o:
